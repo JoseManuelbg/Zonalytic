@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZONALYTIC — Ficha de Implantación</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root {
+  --bg: #f4f2ee;
+  --bg2: #ffffff;
+  --surface: #faf9f6;
+  --border: #ddd9d0;
+  --border2: #c8c2b6;
+  --ink: #1a1a18;
+  --ink2: #5a5650;
+  --ink3: #9a9690;
+  --accent: #1a7a5e;
+  --accent-light: #e6f5f0;
+  --accent2: #c45c2a;
+  --accent2-light: #fdf0e8;
+  --warn: #b8460a;
+  --tag-prod: #1a7a5e;
+  --tag-log: #2a5a8a;
+  --tag-inc: #8a3a2a;
+  --tag-oth: #5a4a7a;
+  --step-done: #1a7a5e;
+  --step-active: #1a1a18;
+  --step-pend: #c8c2b6;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* TOPBAR */
+.topbar {
+  background: var(--ink);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 28px; height: 28px;
+  border: 2px solid #4fd4a8;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px; padding: 3px;
+}
+.brand-mark span { background: #4fd4a8; }
+.brand-mark span:nth-child(2), .brand-mark span:nth-child(3) { opacity: 0.3; }
+
+.brand-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  color: white;
+}
+.brand-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.15em;
+  margin-top: 1px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-export {
+  background: #4fd4a8;
+  color: var(--ink);
+  border: none;
+  padding: 7px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+.btn-export:hover { background: #3ac096; }
+
+/* LAYOUT */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: calc(100vh - 56px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 32px 0;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  padding: 0 20px;
+  margin-bottom: 8px;
+}
+.sidebar-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 2px;
+}
+.step-item:hover { background: var(--bg); }
+.step-item.active { background: var(--accent-light); }
+
+.step-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--step-pend);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink3);
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all 0.2s;
+}
+.step-item.done .step-num {
+  background: var(--step-done);
+  border-color: var(--step-done);
+  color: white;
+}
+.step-item.active .step-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.step-text {}
+.step-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.step-item.active .step-title { color: var(--accent); font-weight: 600; }
+.step-desc {
+  font-size: 11px;
+  color: var(--ink3);
+  margin-top: 2px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 20px;
+}
+
+/* PROGRESS */
+.progress-bar {
+  margin: 0 20px 20px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* MAIN CONTENT */
+.main {
+  padding: 40px 48px;
+  max-width: 900px;
+}
+
+/* STEP HEADER */
+.step-header {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.step-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.step-heading {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.step-hint {
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+/* FORMS */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.form-grid.one { grid-template-columns: 1fr; }
+.form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-field.full { grid-column: 1 / -1; }
+
+label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  font-weight: 500;
+}
+
+input[type="text"], input[type="date"], input[type="number"],
+select, textarea {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(26,122,94,0.1);
+}
+select { cursor: pointer; }
+textarea { resize: vertical; min-height: 80px; }
+
+/* CARDS — list items */
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: var(--shadow-lg); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-icon {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+}
+.card-icon.blue { background: #e6eef8; color: #2a5a8a; }
+.card-icon.red { background: #fceae6; color: #8a3a2a; }
+.card-icon.purple { background: #eeebf8; color: #5a4a7a; }
+.card-icon.orange { background: var(--accent2-light); color: var(--accent2); }
+
+.card-title { font-size: 14px; font-weight: 500; color: var(--ink); }
+.card-subtitle { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+
+.card-actions { display: flex; gap: 6px; align-items: center; }
+
+.btn-icon {
+  width: 28px; height: 28px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--ink2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+.btn-icon:hover { background: #fee; border-color: #fcc; color: var(--warn); }
+.btn-icon.collapse-btn { color: var(--ink3); }
+.btn-icon.collapse-btn:hover { background: var(--bg); border-color: var(--border); color: var(--ink); }
+
+.card-body { padding: 16px; }
+.card-body.hidden { display: none; }
+
+/* TYPE BADGE */
+.type-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+.badge-prod { background: #e6f5f0; color: #1a7a5e; }
+.badge-log  { background: #e6eef8; color: #2a5a8a; }
+.badge-inc  { background: #fceae6; color: #8a3a2a; }
+.badge-oth  { background: #eeebf8; color: #5a4a7a; }
+.badge-com  { background: #f5f0e6; color: #7a5a1a; }
+
+/* ADD BUTTON */
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 2px dashed var(--border2);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  justify-content: center;
+}
+.btn-add:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.btn-add-icon { font-size: 18px; line-height: 1; }
+
+/* NAV BUTTONS */
+.step-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-prev, .btn-next {
+  padding: 11px 24px;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.btn-prev {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  color: var(--ink2);
+}
+.btn-prev:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+.btn-next {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 2px 8px rgba(26,122,94,0.25);
+}
+.btn-next:hover { background: #157a52; box-shadow: 0 4px 16px rgba(26,122,94,0.3); }
+
+/* SUMMARY */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.summary-kpi {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+.kpi-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.kpi-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--ink3);
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+.summary-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.summary-section h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.summary-table th {
+  text-align: left;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.summary-table td {
+  padding: 8px 8px;
+  border-bottom: 1px solid var(--bg);
+  color: var(--ink2);
+}
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table td:first-child { color: var(--ink); font-weight: 500; }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--ink3);
+  font-size: 13px;
+}
+.empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+/* RFID badge */
+.rfid-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  background: var(--ink);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+/* Hint box */
+.hint-box {
+  background: var(--accent-light);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: var(--accent);
+  line-height: 1.6;
+}
+.hint-box strong { color: var(--accent); font-weight: 600; }
+
+/* SCREEN VISIBILITY */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Animations */
+.screen.active {
+  animation: fadeSlide 0.25s ease both;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* JSON preview */
+.json-preview {
+  background: var(--ink);
+  color: #4fd4a8;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 20px;
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 400px;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 24px 20px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid.three { grid-template-columns: 1fr; }
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-mark"><span></span><span></span><span></span><span></span></div>
+    <div>
+      <div class="brand-name">ZONALYTIC</div>
+      <div class="brand-sub">Ficha de Implantación</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn-export" onclick="exportJSON()">↓ Exportar JSON + imagen</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div style="padding: 0 20px; margin-bottom: 20px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; color:var(--ink3); text-transform:uppercase; margin-bottom:8px;">Progreso</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:14%"></div></div>
+      <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--ink3);" id="progressLabel">Paso 1 de 6</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Pasos</div>
+
+      <div class="step-item active" id="nav-0" onclick="goTo(0)">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="step-title">Identificación</div>
+          <div class="step-desc">Empresa y técnico</div>
+        </div>
+      </div>
+
+      <div class="step-item" id="nav-1" onclick="goTo(1)">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="step-title">Zonas</div>
+          <div class="step-desc">Estructura y jerarquía</div>
+        </div>
+      </div>
+
+      <div class="step-item" id="nav-2" onclick="goTo(2)">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <div class="step-title">Puntos RFID</div>
+          <div class="step-desc">Puntos de control</div>
+        </div>
+      </div>
+
+      <div class="step-item" id="nav-3" onclick="goTo(3)">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <div class="step-title">Contexto</div>
+          <div class="step-desc">Producción y costes</div>
+        </div>
+      </div>
+
+      <div class="step-item" id="nav-4" onclick="goTo(4)">
+        <div class="step-num">5</div>
+        <div class="step-text">
+          <div class="step-title">Objetivo piloto</div>
+          <div class="step-desc">Problemas y metas</div>
+        </div>
+      </div>
+
+      <div class="step-item" id="nav-5" onclick="goTo(5)">
+        <div class="step-num">6</div>
+        <div class="step-text">
+          <div class="step-title">Resumen</div>
+          <div class="step-desc">Revisión y exportación</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- STEP 0: IDENTIFICACIÓN -->
+    <div class="screen active" id="screen-0">
+      <div class="step-header">
+        <div class="step-badge">Paso 1 / 6</div>
+        <div class="step-heading">Identificación</div>
+        <div class="step-hint">Datos generales de la visita de implantación</div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Nombre de la empresa</label>
+          <input type="text" id="empresa" placeholder="Ej: Cítricos AND. S.A.T. 3719">
+        </div>
+        <div class="form-field">
+          <label>Centro de trabajo</label>
+          <input type="text" id="centro" placeholder="Ej: Planta Almería">
+        </div>
+        <div class="form-field">
+          <label>Fecha de visita</label>
+          <input type="date" id="fecha">
+        </div>
+        <div class="form-field">
+          <label>Técnico responsable</label>
+          <input type="text" id="tecnico" placeholder="Nombre del técnico Regislab">
+        </div>
+        <div class="form-field full">
+          <label>Observaciones generales</label>
+          <textarea id="obs_general" placeholder="Notas iniciales sobre la instalación, accesos, contacto en fábrica..."></textarea>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <span></span>
+        <button class="btn-next" onclick="goTo(1)">Siguiente: Zonas →</button>
+      </div>
+    </div>
+
+    <!-- STEP 1: ZONAS -->
+    <div class="screen" id="screen-1">
+      <div class="step-header">
+        <div class="step-badge">Paso 2 / 6</div>
+        <div class="step-heading">Zonas de trabajo</div>
+        <div class="step-hint">Define la estructura de zonas y su jerarquía</div>
+      </div>
+
+      <div class="hint-box">
+        <strong>Consejo:</strong> Primero añade las zonas padre (CONVENCIONAL, COMÚN, ECOLÓGICO...) y después las subzonas indicando su zona padre. Esto permite configurar la jerarquía tal y como se diseñó en la pizarra.
+      </div>
+
+      <div class="cards-list" id="zonas-list">
+        <div class="empty-state"><div class="empty-icon">🏭</div>Aún no hay zonas. Pulsa "Añadir zona" para empezar.</div>
+      </div>
+      <button class="btn-add" onclick="addZona()"><span class="btn-add-icon">＋</span> Añadir zona</button>
+
+      <div class="step-nav">
+        <button class="btn-prev" onclick="goTo(0)">← Anterior</button>
+        <button class="btn-next" onclick="goTo(2)">Siguiente: Puntos RFID →</button>
+      </div>
+    </div>
+
+
+    <!-- STEP 3: PUNTOS RFID -->
+    <div class="screen" id="screen-2">
+      <div class="step-header">
+        <div class="step-badge">Paso 3 / 6</div>
+        <div class="step-heading">Puntos de control RFID</div>
+        <div class="step-hint">Los PCs se generan automáticamente a partir de las zonas hoja. Completa los datos físicos de cada uno.</div>
+      </div>
+
+      <div class="hint-box">
+        <strong>Cómo funciona:</strong> Cada zona sin subzonas (zona hoja) es un punto de control. El sistema la detecta automáticamente. Aquí solo necesitas añadir los datos físicos de instalación: tipo de elemento, ancho y observaciones para el equipo instalador.
+      </div>
+
+      <div id="rfid-no-zonas" style="display:none;">
+        <div class="empty-state"><div class="empty-icon">⬡</div>Vuelve al paso anterior y añade zonas primero. Los PCs se generarán automáticamente.</div>
+      </div>
+      <div class="cards-list" id="rfid-list"></div>
+
+      <div class="step-nav">
+        <button class="btn-prev" onclick="goTo(1)">← Anterior</button>
+        <button class="btn-next" onclick="goTo(3)">Siguiente: Contexto →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: CONTEXTO PRODUCTIVO -->
+    <div class="screen" id="screen-3">
+      <div class="step-header">
+        <div class="step-badge">Paso 4 / 6</div>
+        <div class="step-heading">Contexto productivo</div>
+        <div class="step-hint">Asocia clientes, productos y costes a cada zona</div>
+      </div>
+
+      <div class="cards-list" id="contexto-list">
+        <div class="empty-state"><div class="empty-icon">📋</div>Aún no hay contextos productivos definidos.</div>
+      </div>
+      <button class="btn-add" onclick="addContexto()"><span class="btn-add-icon">＋</span> Añadir contexto productivo</button>
+
+      <div class="step-nav">
+        <button class="btn-prev" onclick="goTo(2)">← Anterior</button>
+        <button class="btn-next" onclick="goTo(4)">Siguiente: Objetivo →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: OBJETIVO DEL PILOTO -->
+    <div class="screen" id="screen-4">
+      <div class="step-header">
+        <div class="step-badge">Paso 5 / 6</div>
+        <div class="step-heading">Objetivo del piloto</div>
+        <div class="step-hint">Documenta los problemas detectados y las metas a conseguir</div>
+      </div>
+
+      <div class="form-grid one">
+        <div class="form-field">
+          <label>Problemas detectados en la operación actual</label>
+          <textarea id="problemas" rows="4" placeholder="¿Qué problemas tiene actualmente el cliente? Ej: no saben cuánto tiempo dedican a cada cliente, pérdida de trazabilidad entre zonas..."></textarea>
+        </div>
+        <div class="form-field">
+          <label>Zonas críticas a monitorizar</label>
+          <textarea id="zonas_criticas" rows="3" placeholder="Ej: TRIADO es donde más variación de tiempo hay. BOLSAS depende mucho del turno..."></textarea>
+        </div>
+        <div class="form-field">
+          <label>Objetivo principal del piloto</label>
+          <textarea id="objetivo_piloto" rows="3" placeholder="¿Qué se quiere demostrar o medir con este piloto?"></textarea>
+        </div>
+        <div class="form-field">
+          <label>KPIs esperados / métricas de éxito</label>
+          <textarea id="kpis" rows="3" placeholder="Ej: reducir tiempo en ENCAJADO AUTOMATIZADO un 15%, conocer coste real por cliente..."></textarea>
+        </div>
+        <div class="form-field">
+          <label>Observaciones adicionales</label>
+          <textarea id="obs_piloto" rows="3" placeholder="Otras anotaciones relevantes de la visita..."></textarea>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-prev" onclick="goTo(3)">← Anterior</button>
+        <button class="btn-next" onclick="goTo(5)">Ver resumen →</button>
+      </div>
+    </div>
+
+    <!-- STEP 6: RESUMEN -->
+    <div class="screen" id="screen-5">
+      <div class="step-header">
+        <div class="step-badge">Paso 6 / 6</div>
+        <div class="step-heading">Resumen de implantación</div>
+        <div class="step-hint">Revisión completa antes de exportar</div>
+      </div>
+
+      <div class="summary-grid" id="summary-kpis"></div>
+      <div id="summary-content"></div>
+
+
+      <!-- ANÁLISIS IA CON CLAUDE -->
+      <div style="margin-top: 28px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:var(--ink);">🤖 Análisis inteligente</div>
+            <div style="font-size:12px; color:var(--ink3); margin-top:2px;">Árbol de zonas · Puntos críticos · Compartir imagen</div>
+          </div>
+          <button id="btn-analizar" class="btn-next" style="padding:10px 20px; font-size:13px;" onclick="analizarConClaude()">✦ Analizar con Claude</button>
+        </div>
+        <div id="ai-loading" style="display:none; background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:36px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:12px; animation: pulse 1.5s infinite;">⚙️</div>
+          <div style="font-family:'DM Mono',monospace; font-size:12px; color:var(--ink2);" id="ai-loading-text">Analizando estructura de zonas...</div>
+        </div>
+        <div id="ai-result" style="display:none;">
+          <div style="background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+              <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--ink3);">🌳 Árbol de zonas RFID</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button onclick="descargarArbolCanvas()" style="background:#1a7a5e; color:white; border:none; border-radius:6px; padding:7px 14px; font-size:12px; font-family:'DM Mono',monospace; cursor:pointer;">↓ Descargar imagen</button>
+                <button onclick="compartirWhatsApp()" style="background:#25D366; color:white; border:none; border-radius:6px; padding:7px 14px; font-size:12px; font-family:'DM Mono',monospace; cursor:pointer;">📲 Enviar por WhatsApp</button>
+              </div>
+            </div>
+            <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+              <canvas id="arbol-canvas" style="display:block; border-radius:8px; max-width:100%;"></canvas>
+            </div>
+          </div>
+          <div id="ai-criticos" style="background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:20px;"></div>
+        </div>
+        <div id="ai-error" style="display:none; background:#fceae6; border:1px solid #f5c6b8; border-radius:8px; padding:16px; color:#8a3a2a; font-size:13px;"></div>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:10px;">Vista previa JSON</div>
+        <div class="json-preview" id="json-preview"></div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-prev" onclick="goTo(4)">← Anterior</button>
+        <button class="btn-next" onclick="exportJSON()">↓ Exportar JSON + imagen</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN — URL del proxy Worker (evita CORS)
+// ============================================================
+const PROXY_URL = 'https://zonalytic-api.regislabsc.workers.dev';
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  empresa: '', centro: '', fecha: '', tecnico: '', obs_general: '',
+  zonas: [],
+  puntos_control: [],
+  contexto: [],
+  objetivo: { problemas: '', zonas_criticas: '', objetivo_piloto: '', kpis: '', obs_piloto: '' }
+};
+
+let currentStep = 0;
+const TOTAL_STEPS = 6;
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goTo(step) {
+  saveCurrentStep();
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.step-item').forEach((item, i) => {
+    item.classList.remove('active');
+    if (i < step) item.classList.add('done');
+    else item.classList.remove('done');
+  });
+
+  document.getElementById('screen-' + step).classList.add('active');
+  document.getElementById('nav-' + step).classList.add('active');
+  document.getElementById('nav-' + step).classList.remove('done');
+
+  currentStep = step;
+
+  const pct = Math.round(((step + 1) / TOTAL_STEPS) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Paso ${step + 1} de ${TOTAL_STEPS}`;
+
+  if (step === 2) renderRFID();
+  if (step === 5) renderSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function saveCurrentStep() {
+  // Step 0
+  state.empresa = val('empresa');
+  state.centro = val('centro');
+  state.fecha = val('fecha');
+  state.tecnico = val('tecnico');
+  state.obs_general = val('obs_general');
+  // Step 5
+  state.objetivo.problemas = val('problemas');
+  state.objetivo.zonas_criticas = val('zonas_criticas');
+  state.objetivo.objetivo_piloto = val('objetivo_piloto');
+  state.objetivo.kpis = val('kpis');
+  state.objetivo.obs_piloto = val('obs_piloto');
+}
+
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+
+// ============================================================
+// ZONAS
+// ============================================================
+function addZona() {
+  const id = 'z_' + Date.now();
+  state.zonas.push({
+    id, nombre: '', tipo: 'Producción', padre: '', color: '#1a7a5e', notas: ''
+  });
+  renderZonas();
+  // scroll to last
+  setTimeout(() => {
+    const last = document.querySelector('#zonas-list .card:last-child');
+    if (last) last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+}
+
+function removeZona(id) {
+  state.zonas = state.zonas.filter(z => z.id !== id);
+  renderZonas();
+}
+
+function updateZona(id, field, value) {
+  const z = state.zonas.find(z => z.id === id);
+  if (z) z[field] = value;
+}
+
+function renderZonas() {
+  const container = document.getElementById('zonas-list');
+  if (state.zonas.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏭</div>Aún no hay zonas. Pulsa "Añadir zona" para empezar.</div>';
+    return;
+  }
+
+  const parentOptions = state.zonas.map(z =>
+    `<option value="${z.id}">${z.nombre || '(sin nombre)'}</option>`
+  ).join('');
+
+  container.innerHTML = state.zonas.map((z, i) => {
+    const typeColor = { 'Producción': 'prod', 'Logística': 'log', 'Incidencias': 'inc', 'Común': 'com', 'Otros': 'oth' };
+    const iconColor = { 'Producción': '', 'Logística': 'blue', 'Incidencias': 'red', 'Común': 'orange', 'Otros': 'purple' };
+    return `
+    <div class="card" id="card-z-${z.id}">
+      <div class="card-header" onclick="toggleCard('body-z-${z.id}', 'chev-z-${z.id}')">
+        <div class="card-header-left">
+          <div class="card-icon ${iconColor[z.tipo] || ''}">${z.nombre ? z.nombre[0].toUpperCase() : '#'}</div>
+          <div>
+            <div class="card-title">${z.nombre || '<span style="color:var(--ink3)">Nueva zona</span>'}</div>
+            <div class="card-subtitle">
+              <span class="type-badge badge-${typeColor[z.tipo] || 'oth'}">${z.tipo}</span>
+              ${z.padre ? ` · Subzona de: <b>${state.zonas.find(p=>p.id===z.padre)?.nombre || z.padre}</b>` : ''}
+            </div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-icon collapse-btn" id="chev-z-${z.id}">▾</button>
+          <button class="btn-icon" onclick="event.stopPropagation(); removeZona('${z.id}')">✕</button>
+        </div>
+      </div>
+      <div class="card-body" id="body-z-${z.id}">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Nombre de la zona</label>
+            <input type="text" value="${z.nombre}" placeholder="Ej: ENCAJADO AUTOMATIZADO"
+              oninput="updateZona('${z.id}','nombre',this.value); refreshCardTitle('card-z-${z.id}', this.value, '${z.tipo}')">
+          </div>
+          <div class="form-field">
+            <label>Tipo de zona</label>
+            <select onchange="updateZona('${z.id}','tipo',this.value)">
+              <option ${z.tipo==='Producción'?'selected':''}>Producción</option>
+              <option ${z.tipo==='Logística'?'selected':''}>Logística</option>
+              <option ${z.tipo==='Incidencias'?'selected':''}>Incidencias</option>
+              <option ${z.tipo==='Común'?'selected':''}>Común</option>
+              <option ${z.tipo==='Otros'?'selected':''}>Otros</option>
+            </select>
+          </div>
+          <div class="form-field full">
+            <label>Zona padre (opcional)</label>
+            <select onchange="updateZona('${z.id}','padre',this.value)">
+              <option value="">— Zona raíz (sin padre) —</option>
+              ${state.zonas.filter(p => p.id !== z.id).map(p =>
+                `<option value="${p.id}" ${z.padre===p.id?'selected':''}>${p.nombre || '(sin nombre)'}</option>`
+              ).join('')}
+            </select>
+          </div>
+          <div class="form-field full">
+            <label>Notas / descripción</label>
+            <input type="text" value="${z.notas}" placeholder="Actividad principal de esta zona..."
+              oninput="updateZona('${z.id}','notas',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function refreshCardTitle(cardId, nombre, tipo) {
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  const title = card.querySelector('.card-title');
+  const icon = card.querySelector('.card-icon');
+  if (title) title.innerHTML = nombre || '<span style="color:var(--ink3)">Nueva zona</span>';
+  if (icon) icon.textContent = nombre ? nombre[0].toUpperCase() : '#';
+}
+
+
+// ============================================================
+// RFID POINTS — auto-generated from leaf zones
+// ============================================================
+
+// Returns zones with no children (leaf zones = PCs)
+function getLeafZones() {
+  return state.zonas.filter(z => !state.zonas.some(other => other.padre === z.id));
+}
+
+// Sync state.puntos_control with current leaf zones.
+// Preserves existing physical data if the zone is already a PC.
+function syncPCs() {
+  const leaves = getLeafZones();
+  const existing = {};
+  state.puntos_control.forEach(p => { existing[p.zona_id] = p; });
+
+  state.puntos_control = leaves.map((z, i) => {
+    const prev = existing[z.id];
+    return {
+      id: 'PC-' + String(i + 1).padStart(3, '0'),
+      zona_id: z.id,
+      tipo_fisico: prev?.tipo_fisico || 'Puerta',
+      ancho: prev?.ancho || '',
+      observaciones: prev?.observaciones || ''
+    };
+  });
+}
+
+function updateRFID(zona_id, field, value) {
+  const p = state.puntos_control.find(p => p.zona_id === zona_id);
+  if (p) p[field] = value;
+}
+
+function renderRFID() {
+  syncPCs();
+  const noZonas = document.getElementById('rfid-no-zonas');
+  const container = document.getElementById('rfid-list');
+
+  if (state.puntos_control.length === 0) {
+    noZonas.style.display = 'block';
+    container.innerHTML = '';
+    return;
+  }
+  noZonas.style.display = 'none';
+
+  container.innerHTML = state.puntos_control.map(p => {
+    const zona = state.zonas.find(z => z.id === p.zona_id);
+    const padre = zona?.padre ? state.zonas.find(z => z.id === zona.padre) : null;
+    const breadcrumb = padre ? `${padre.nombre} › ${zona?.nombre || '—'}` : (zona?.nombre || '—');
+    return `
+    <div class="card">
+      <div class="card-header" onclick="toggleCard('body-r-${p.id}', 'chev-r-${p.id}')">
+        <div class="card-header-left">
+          <div class="card-icon orange"><span style="font-size:10px">📡</span></div>
+          <div>
+            <div class="card-title" style="display:flex;align-items:center;gap:8px;">
+              <span class="rfid-badge">${p.id}</span>
+              ${zona?.nombre || '—'}
+            </div>
+            <div class="card-subtitle">${breadcrumb} · ${p.tipo_fisico}${p.ancho ? ' · ' + p.ancho + 'm' : ' · ancho pendiente'}</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-icon collapse-btn" id="chev-r-${p.id}">▾</button>
+        </div>
+      </div>
+      <div class="card-body hidden" id="body-r-${p.id}">
+        <div style="background:var(--accent-light);border-left:3px solid var(--accent);padding:8px 12px;border-radius:0 4px 4px 0;margin-bottom:14px;font-size:12px;color:var(--accent);">
+          Zona: <strong>${breadcrumb}</strong> — generado automáticamente. Solo completa los datos físicos de instalación.
+        </div>
+        <div class="form-grid three">
+          <div class="form-field">
+            <label>Tipo físico</label>
+            <select onchange="updateRFID('${p.zona_id}','tipo_fisico',this.value)">
+              <option ${p.tipo_fisico==='Puerta'?'selected':''}>Puerta</option>
+              <option ${p.tipo_fisico==='Pasillo'?'selected':''}>Pasillo</option>
+              <option ${p.tipo_fisico==='Línea'?'selected':''}>Línea</option>
+              <option ${p.tipo_fisico==='Portal'?'selected':''}>Portal</option>
+              <option ${p.tipo_fisico==='Otros'?'selected':''}>Otros</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Ancho aprox. (m)</label>
+            <input type="number" step="0.1" min="0" value="${p.ancho}" placeholder="Ej: 1.2"
+              oninput="updateRFID('${p.zona_id}','ancho',this.value)">
+          </div>
+          <div class="form-field full">
+            <label>Observaciones de instalación</label>
+            <textarea placeholder="Material del marco, cableado disponible, altura techo, obstáculos..." rows="2"
+              oninput="updateRFID('${p.zona_id}','observaciones',this.value)">${p.observaciones}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// CONTEXTO PRODUCTIVO
+// ============================================================
+function addContexto() {
+  state.contexto.push({
+    id: 'ctx_' + Date.now(),
+    zona: '', cliente: '', producto: '', tipo_linea: '', turno: '', coste_hora: ''
+  });
+  renderContexto();
+}
+
+function removeContexto(id) {
+  state.contexto = state.contexto.filter(c => c.id !== id);
+  renderContexto();
+}
+
+function updateContexto(id, field, value) {
+  const c = state.contexto.find(c => c.id === id);
+  if (c) c[field] = value;
+}
+
+function renderContexto() {
+  const container = document.getElementById('contexto-list');
+  if (state.contexto.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div>Aún no hay contextos productivos definidos.</div>';
+    return;
+  }
+
+  container.innerHTML = state.contexto.map((c, i) => {
+    const zona = state.zonas.find(z => z.id === c.zona);
+    return `
+    <div class="card">
+      <div class="card-header" onclick="toggleCard('body-c-${c.id}', 'chev-c-${c.id}')">
+        <div class="card-header-left">
+          <div class="card-icon purple">€</div>
+          <div>
+            <div class="card-title">${zona?.nombre || 'Zona no asignada'} ${c.cliente ? '· ' + c.cliente : ''}</div>
+            <div class="card-subtitle">${c.producto || 'Sin producto'} ${c.coste_hora ? '· ' + c.coste_hora + ' €/h' : ''}</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-icon collapse-btn" id="chev-c-${c.id}">▾</button>
+          <button class="btn-icon" onclick="event.stopPropagation(); removeContexto('${c.id}')">✕</button>
+        </div>
+      </div>
+      <div class="card-body" id="body-c-${c.id}">
+        <div class="form-grid three">
+          <div class="form-field full">
+            <label>Zona asociada</label>
+            <select onchange="updateContexto('${c.id}','zona',this.value)">
+              <option value="">Seleccionar zona...</option>
+              ${state.zonas.map(z => `<option value="${z.id}" ${c.zona===z.id?'selected':''}>${z.nombre||'(sin nombre)'}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Cliente</label>
+            <input type="text" value="${c.cliente}" placeholder="Nombre del cliente"
+              oninput="updateContexto('${c.id}','cliente',this.value)">
+          </div>
+          <div class="form-field">
+            <label>Producto</label>
+            <input type="text" value="${c.producto}" placeholder="Tipo de producto"
+              oninput="updateContexto('${c.id}','producto',this.value)">
+          </div>
+          <div class="form-field">
+            <label>Tipo de línea</label>
+            <input type="text" value="${c.tipo_linea}" placeholder="Ej: Citrus, Envase..."
+              oninput="updateContexto('${c.id}','tipo_linea',this.value)">
+          </div>
+          <div class="form-field">
+            <label>Turno</label>
+            <select onchange="updateContexto('${c.id}','turno',this.value)">
+              <option value="">— Seleccionar —</option>
+              <option ${c.turno==='Mañana'?'selected':''}>Mañana</option>
+              <option ${c.turno==='Tarde'?'selected':''}>Tarde</option>
+              <option ${c.turno==='Noche'?'selected':''}>Noche</option>
+              <option ${c.turno==='Partido'?'selected':''}>Partido</option>
+              <option ${c.turno==='Todos'?'selected':''}>Todos</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Coste hora (€/h)</label>
+            <input type="number" step="0.01" min="0" value="${c.coste_hora}" placeholder="Ej: 35.00"
+              oninput="updateContexto('${c.id}','coste_hora',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// TOGGLE CARD
+// ============================================================
+function toggleCard(bodyId, chevId) {
+  const body = document.getElementById(bodyId);
+  const chev = document.getElementById(chevId);
+  if (!body) return;
+  const hidden = body.classList.toggle('hidden');
+  if (chev) chev.textContent = hidden ? '▸' : '▾';
+}
+
+// ============================================================
+// SUMMARY
+// ============================================================
+function renderSummary() {
+  saveCurrentStep();
+
+  // KPIs
+  document.getElementById('summary-kpis').innerHTML = `
+    <div class="summary-kpi"><div class="kpi-num">${state.zonas.length}</div><div class="kpi-lbl">Zonas</div></div>
+    <div class="summary-kpi"><div class="kpi-num">${state.puntos_control.length}</div><div class="kpi-lbl">Puntos RFID</div></div>
+    <div class="summary-kpi"><div class="kpi-num">${state.contexto.length}</div><div class="kpi-lbl">Contextos</div></div>
+  `;
+
+  let html = '';
+
+  // Empresa
+  html += `<div class="summary-section">
+    <h3>📋 Identificación</h3>
+    <table class="summary-table">
+      <tr><td>Empresa</td><td>${state.empresa || '—'}</td></tr>
+      <tr><td>Centro</td><td>${state.centro || '—'}</td></tr>
+      <tr><td>Fecha</td><td>${state.fecha || '—'}</td></tr>
+      <tr><td>Técnico</td><td>${state.tecnico || '—'}</td></tr>
+    </table>
+  </div>`;
+
+  // Zonas
+  if (state.zonas.length > 0) {
+    html += `<div class="summary-section"><h3>🏭 Zonas (${state.zonas.length})</h3>
+    <table class="summary-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Zona padre</th><th>Notas</th></tr>
+      ${state.zonas.map(z => {
+        const padre = state.zonas.find(p => p.id === z.padre);
+        return `<tr><td>${z.nombre || '—'}</td><td>${z.tipo}</td><td>${padre?.nombre || '—'}</td><td>${z.notas || '—'}</td></tr>`;
+      }).join('')}
+    </table></div>`;
+  }
+
+
+
+  // RFID
+  syncPCs();
+  if (state.puntos_control.length > 0) {
+    html += `<div class="summary-section"><h3>📡 Puntos de control RFID (${state.puntos_control.length})</h3>
+    <table class="summary-table">
+      <tr><th>ID</th><th>Zona</th><th>Zona padre</th><th>Tipo físico</th><th>Ancho</th><th>Observaciones</th></tr>
+      ${state.puntos_control.map(p => {
+        const z = state.zonas.find(zz => zz.id === p.zona_id);
+        const padre = z?.padre ? state.zonas.find(zz => zz.id === z.padre) : null;
+        const anchoOk = p.ancho ? `<span style="color:var(--accent);font-weight:500">${p.ancho}m</span>` : '<span style="color:var(--accent2)">Pendiente</span>';
+        return `<tr><td><span class="rfid-badge">${p.id}</span></td><td>${z?.nombre||'—'}</td><td>${padre?.nombre||'—'}</td><td>${p.tipo_fisico}</td><td>${anchoOk}</td><td>${p.observaciones||'—'}</td></tr>`;
+      }).join('')}
+    </table></div>`;
+  }
+
+  // Objetivo
+  if (state.objetivo.objetivo_piloto || state.objetivo.problemas) {
+    html += `<div class="summary-section"><h3>🎯 Objetivo del piloto</h3>
+    <table class="summary-table">
+      <tr><td>Problemas detectados</td><td>${state.objetivo.problemas || '—'}</td></tr>
+      <tr><td>Zonas críticas</td><td>${state.objetivo.zonas_criticas || '—'}</td></tr>
+      <tr><td>Objetivo principal</td><td>${state.objetivo.objetivo_piloto || '—'}</td></tr>
+      <tr><td>KPIs esperados</td><td>${state.objetivo.kpis || '—'}</td></tr>
+    </table></div>`;
+  }
+
+  document.getElementById('summary-content').innerHTML = html;
+
+  // JSON preview
+  document.getElementById('json-preview').textContent = JSON.stringify(buildJSON(), null, 2);
+}
+
+// ============================================================
+// JSON EXPORT
+// ============================================================
+function buildJSON() {
+  saveCurrentStep();
+  return {
+    empresa: state.empresa,
+    centro: state.centro,
+    fecha: state.fecha,
+    tecnico: state.tecnico,
+    obs_general: state.obs_general,
+    zonas: state.zonas.map(z => ({
+      id: z.id,
+      nombre: z.nombre,
+      tipo: z.tipo,
+      zona_padre_id: z.padre || null,
+      zona_padre_nombre: state.zonas.find(p => p.id === z.padre)?.nombre || null,
+      notas: z.notas
+    })),
+    puntos_control: state.puntos_control.map(p => {
+      const z = state.zonas.find(zz => zz.id === p.zona_id);
+      const padre = z?.padre ? state.zonas.find(zz => zz.id === z.padre) : null;
+      return {
+        id: p.id,
+        zona_id: p.zona_id,
+        zona_nombre: z?.nombre || null,
+        zona_padre_id: z?.padre || null,
+        zona_padre_nombre: padre?.nombre || null,
+        tipo_fisico: p.tipo_fisico,
+        ancho_m: p.ancho ? parseFloat(p.ancho) : null,
+        observaciones: p.observaciones
+      };
+    }),
+    contexto: state.contexto.map(c => ({
+      zona_id: c.zona,
+      zona_nombre: state.zonas.find(z => z.id === c.zona)?.nombre || null,
+      cliente: c.cliente,
+      producto: c.producto,
+      tipo_linea: c.tipo_linea,
+      turno: c.turno,
+      coste_hora_eur: c.coste_hora ? parseFloat(c.coste_hora) : null
+    })),
+    objetivo: state.objetivo
+  };
+}
+
+function exportJSON() {
+  const data = buildJSON();
+  const empresaNorm = (state.empresa || 'empresa').replace(/\s+/g, '_').toLowerCase();
+  const fechaNorm = state.fecha || new Date().toISOString().slice(0, 10);
+
+  // 1. Descargar JSON
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `zonalytic_implantacion_${empresaNorm}_${fechaNorm}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // 2. Generar JPG del arbol de zonas
+  setTimeout(() => exportZonesImage(empresaNorm, fechaNorm), 500);
+}
+
+function exportZonesImage(empresaNorm, fechaNorm) {
+  const roots = state.zonas.filter(z => !z.padre);
+  const getChildren = id => state.zonas.filter(z => z.padre === id);
+
+  const typeColor = {
+    'Produccion':  { bg: '#1a7a5e', lt: '#e8f5f0' },
+    'Producción':  { bg: '#1a7a5e', lt: '#e8f5f0' },
+    'Logistica':   { bg: '#2a5a8a', lt: '#e6eef8' },
+    'Logística':   { bg: '#2a5a8a', lt: '#e6eef8' },
+    'Incidencias': { bg: '#8a3a2a', lt: '#fceae6' },
+    'Comun':       { bg: '#7a5a1a', lt: '#f5f0e6' },
+    'Común':       { bg: '#7a5a1a', lt: '#f5f0e6' },
+    'Otros':       { bg: '#5a4a7a', lt: '#eeebf8' },
+  };
+  const defaultColor = { bg: '#5a4a7a', lt: '#eeebf8' };
+
+  const SCALE = 2;
+  const CW = 1200;
+  const PAD = 40;
+  const BOX_H = 68;
+  const BOX_GAP = 12;
+  const HEADER_H = 116;
+  const FOOTER_H = 52;
+  const CONN_H = 60;
+
+  function maxDepth(zoneId, depth) {
+    const kids = getChildren(zoneId);
+    if (kids.length === 0) return depth;
+    return Math.max(...kids.map(k => maxDepth(k.id, depth + 1)));
+  }
+  const levels = roots.length === 0 ? 0 : Math.max(...roots.map(r => maxDepth(r.id, 1)));
+  const CH = HEADER_H + levels * (BOX_H + CONN_H) + BOX_H + PAD + FOOTER_H;
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = CW * SCALE;
+  canvas.height = CH * SCALE;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(SCALE, SCALE);
+
+  ctx.fillStyle = '#f4f2ee';
+  ctx.fillRect(0, 0, CW, CH);
+
+  function roundRect(x, y, w, h, r, fill, stroke, sw) {
+    ctx.beginPath();
+    ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    if (fill)  { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = sw||1.5; ctx.stroke(); }
+  }
+
+  function fitText(text, maxW, bold) {
+    for (const sz of [15,13,11,9]) {
+      ctx.font = `${bold?'700':'400'} ${sz}px sans-serif`;
+      if (ctx.measureText(text).width <= maxW) return sz;
+    }
+    return 9;
+  }
+
+  function drawBox(zone, x, y, w, isPC) {
+    const c = typeColor[zone.tipo] || defaultColor;
+    ctx.shadowColor = 'rgba(0,0,0,0.07)';
+    ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+    roundRect(x, y, w, BOX_H, 10, c.lt, c.bg, 1.5);
+    ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; ctx.shadowColor = 'transparent';
+    roundRect(x, y, 5, BOX_H, 10, c.bg, null);
+    const maxTW = w - 22;
+    const sz = fitText(zone.nombre || '—', maxTW, true);
+    ctx.font = `700 ${sz}px sans-serif`;
+    ctx.fillStyle = '#1a1a18';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(zone.nombre || '—', x + w/2 + 3, y + BOX_H/2 + 2, maxTW);
+    ctx.font = '400 10px monospace';
+    ctx.fillStyle = c.bg;
+    ctx.fillText(zone.tipo, x + w/2 + 3, y + BOX_H/2 + 17, maxTW);
+    if (isPC) {
+      const pc = state.puntos_control.find(p => p.zona_id === zone.id);
+      if (pc) {
+        roundRect(x + w - 50, y + BOX_H - 22, 46, 18, 4, '#1a1a18', null);
+        ctx.font = '700 10px monospace';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(pc.id, x + w - 27, y + BOX_H - 13);
+      }
+    }
+  }
+
+  function drawConnector(x1, y1, x2, y2) {
+    const my = (y1 + y2) / 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x1, my);
+    ctx.lineTo(x2, my); ctx.lineTo(x2, y2 - 6);
+    ctx.strokeStyle = '#c8c2b6'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x2-5, y2-7); ctx.lineTo(x2+5, y2-7); ctx.lineTo(x2, y2);
+    ctx.closePath(); ctx.fillStyle = '#c8c2b6'; ctx.fill();
+  }
+
+  function drawTree(zone, cx, y, availW) {
+    const kids = getChildren(zone.id);
+    const isLeaf = kids.length === 0;
+    const bx = cx - availW/2;
+    drawBox(zone, bx, y, availW, isLeaf);
+    if (!isLeaf) {
+      const kidW = Math.max(120, (availW - BOX_GAP * (kids.length + 1)) / kids.length);
+      const totalKidW = kids.length * kidW + (kids.length - 1) * BOX_GAP;
+      const kidStartX = cx - totalKidW/2;
+      const kidY = y + BOX_H + CONN_H;
+      kids.forEach((kid, ki) => {
+        const kidCX = kidStartX + ki * (kidW + BOX_GAP) + kidW/2;
+        drawConnector(cx, y + BOX_H, kidCX, kidY);
+        drawTree(kid, kidCX, kidY, kidW);
+      });
+    }
+  }
+
+  // Header
+  roundRect(0, 0, CW, HEADER_H, 0, '#1a1a18', null);
+  roundRect(0, 0, CW, 4, 0, '#4fd4a8', null);
+  ctx.font = '800 28px sans-serif';
+  ctx.fillStyle = '#4fd4a8';
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillText('ZONALYTIC', PAD, 36);
+  ctx.font = '400 13px monospace';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.fillText('Estructura de zonas  ·  Ficha de implantación', PAD, 62);
+  ctx.font = '400 11px monospace';
+  ctx.fillStyle = 'rgba(255,255,255,0.28)';
+  ctx.fillText(`${state.zonas.length} zonas  ·  ${state.puntos_control.length} PCs RFID`, PAD, 86);
+  ctx.textAlign = 'right';
+  ctx.font = '700 16px sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillText(state.empresa || '—', CW - PAD, 32);
+  ctx.font = '400 12px monospace';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.fillText([state.centro, state.fecha, state.tecnico].filter(Boolean).join('  ·  '), CW - PAD, 58);
+
+  if (roots.length === 0) {
+    ctx.font = '400 16px sans-serif';
+    ctx.fillStyle = '#9a9690';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('Sin zonas registradas', CW/2, HEADER_H + 80);
+  } else {
+    const rootSpacing = (CW - PAD*2) / roots.length;
+    roots.forEach((root, ri) => {
+      const rootCX = PAD + rootSpacing * ri + rootSpacing/2;
+      const rw = Math.min(rootSpacing - BOX_GAP*2, 320);
+      drawTree(root, rootCX, HEADER_H + 24, rw);
+    });
+  }
+
+  // Footer
+  const fy = CH - FOOTER_H;
+  roundRect(0, fy, CW, FOOTER_H, 0, '#1a1a18', null);
+  ctx.font = '400 11px monospace';
+  ctx.fillStyle = 'rgba(255,255,255,0.28)';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(
+    `ZONALYTIC  ·  Regislab  ·  ${[state.empresa, state.centro].filter(Boolean).join(' / ')}  ·  ${state.fecha || ''}`,
+    CW/2, fy + FOOTER_H/2
+  );
+
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a2 = document.createElement('a');
+    a2.href = url;
+    a2.download = `zonalytic_zonas_${empresaNorm}_${fechaNorm}.jpg`;
+    a2.click();
+    URL.revokeObjectURL(url);
+  }, 'image/jpeg', 0.93);
+}
+
+
+// ============================================================
+// ANÁLISIS CON CLAUDE — usa proxy Worker para evitar CORS
+// ============================================================
+let _arbolData = null;
+
+async function analizarConClaude() {
+  const data = buildJSON();
+  document.getElementById('ai-loading').style.display = 'block';
+  document.getElementById('ai-result').style.display = 'none';
+  document.getElementById('ai-error').style.display = 'none';
+  document.getElementById('btn-analizar').disabled = true;
+  document.getElementById('btn-analizar').textContent = '⏳ Analizando...';
+
+  const loadingTexts = ['Mapeando estructura de zonas...','Detectando zonas sin cobertura RFID...','Calculando puntos críticos...','Construyendo árbol de zonas...'];
+  let li = 0;
+  const iv = setInterval(() => { document.getElementById('ai-loading-text').textContent = loadingTexts[li++ % loadingTexts.length]; }, 1800);
+
+  const prompt = `Eres un experto en implantación de sistemas RFID. Analiza esta ficha ZONALYTIC.
+Devuelve ÚNICAMENTE JSON válido sin texto extra ni bloques markdown.
+
+Estructura requerida:
+{
+  "arbol": {
+    "nombre": "nombre empresa o centro",
+    "tipo": "raiz",
+    "rfid": false,
+    "hijos": [
+      {
+        "nombre": "ZONA PADRE",
+        "tipo": "produccion|logistica|incidencias|comun",
+        "rfid": true,
+        "hijos": [
+          { "nombre": "SUBZONA", "tipo": "produccion|logistica|incidencias|comun", "rfid": false, "hijos": [] }
+        ]
+      }
+    ]
+  },
+  "puntos_criticos": [
+    { "titulo": "...", "descripcion": "...", "recomendacion": "...", "prioridad": "alta|media|baja" }
+  ]
+}
+
+Reglas árbol:
+- Raíz = empresa o centro de trabajo
+- Primer nivel = zonas sin zona_padre_id (null)
+- Hijos = zonas cuyo zona_padre_id apunta a una zona padre
+- rfid: true si hay un punto_control asociado a esa zona (zona_id coincide con el id de la zona)
+- tipo: infiere del campo tipo del JSON (Producción→produccion, Logística→logistica, etc.)
+- Usa nombres exactos del JSON
+Puntos críticos: 3-6 problemas reales y específicos basados en los datos.
+Ficha: ${JSON.stringify(data, null, 2)}`;
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, messages: [{ role: 'user', content: prompt }] })
+    });
+    clearInterval(iv);
+    const result = await response.json();
+    if (result.error) throw new Error(result.error.message);
+    const raw = result.content.map(b => b.text || '').join('');
+    const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
+    const parsed = JSON.parse(clean);
+    _arbolData = parsed;
+    dibujarArbolCanvas(parsed.arbol);
+    const criticos = (parsed.puntos_criticos||[]).sort((a,b)=>({alta:0,media:1,baja:2}[a.prioridad]??1)-({alta:0,media:1,baja:2}[b.prioridad]??1));
+    const COL = {alta:['#fff5f0','#f5c6b0','#c45c2a'],media:['#fffbf0','#f5e6b0','#c4a020'],baja:['#f0f8ff','#b0d4f5','#2a7ab8']};
+    let html = `<div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;">⚠️ Puntos críticos a mejorar (${criticos.length})</div>`;
+    criticos.forEach(c => {
+      const p = c.prioridad||'media'; const [bg,border,dot] = COL[p]||COL.media;
+      html += `<div style="display:flex;gap:12px;padding:14px;border-radius:8px;margin-bottom:10px;background:${bg};border:1px solid ${border};">
+        <div style="width:10px;height:10px;border-radius:50%;background:${dot};flex-shrink:0;margin-top:5px;"></div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:13px;margin-bottom:3px;">${c.titulo}<span style="font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;border-radius:20px;background:${bg};border:1px solid ${border};color:${dot};margin-left:8px;">${p.toUpperCase()}</span></div>
+          <div style="font-size:12px;color:var(--ink2);line-height:1.5;">${c.descripcion}</div>
+          ${c.recomendacion?`<div style="font-size:11px;color:#1a7a5e;margin-top:4px;font-family:'DM Mono',monospace;">→ ${c.recomendacion}</div>`:''}
+        </div>
+      </div>`;
+    });
+    document.getElementById('ai-criticos').innerHTML = html;
+    document.getElementById('ai-loading').style.display = 'none';
+    document.getElementById('ai-result').style.display = 'block';
+  } catch(err) {
+    clearInterval(iv);
+    document.getElementById('ai-loading').style.display = 'none';
+    document.getElementById('ai-error').style.display = 'block';
+    document.getElementById('ai-error').innerHTML = `<strong>Error:</strong> ${err.message}`;
+  }
+  document.getElementById('btn-analizar').disabled = false;
+  document.getElementById('btn-analizar').textContent = '✦ Analizar con Claude';
+}
+
+// ============================================================
+// ÁRBOL EN CANVAS
+// ============================================================
+function dibujarArbolCanvas(arbol) {
+  const TIPO_COLOR = {
+    raiz:        { bg:'#1a1a18', stroke:'#1a1a18', text:'#ffffff', badge:'#4fd4a8' },
+    produccion:  { bg:'#e6f5f0', stroke:'#1a7a5e', text:'#1a7a5e', badge:'#1a7a5e' },
+    logistica:   { bg:'#e6eef8', stroke:'#2a5a8a', text:'#2a5a8a', badge:'#2a5a8a' },
+    incidencias: { bg:'#fceae6', stroke:'#8a3a2a', text:'#8a3a2a', badge:'#8a3a2a' },
+    comun:       { bg:'#f5f0e6', stroke:'#7a5a1a', text:'#7a5a1a', badge:'#7a5a1a' },
+    default:     { bg:'#f0eee8', stroke:'#9a9690', text:'#5a5650', badge:'#9a9690' }
+  };
+  const NW=140,NH=48,HGAP=20,VGAP=72,PAD=48;
+  function layout(node,depth,offset){node._d=depth;const kids=node.hijos||[];if(!kids.length){node._w=NW+HGAP;node._x=offset+(NW+HGAP)/2;return;}let cur=offset;kids.forEach(k=>{layout(k,depth+1,cur);cur+=k._w;});node._w=kids.reduce((s,k)=>s+k._w,0);node._x=(kids[0]._x+kids[kids.length-1]._x)/2;}
+  function flatten(n){return[n,...(n.hijos||[]).flatMap(flatten)];}
+  layout(arbol,0,0);const all=flatten(arbol);const maxD=Math.max(...all.map(n=>n._d));
+  const DPR=window.devicePixelRatio||2;const CW=Math.max(arbol._w+PAD*2,700);const CH=(maxD+1)*(NH+VGAP)+PAD*2+40;
+  const canvas=document.getElementById('arbol-canvas');
+  canvas.width=CW*DPR;canvas.height=CH*DPR;canvas.style.width=CW+'px';canvas.style.height=CH+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(DPR,DPR);
+  const grd=ctx.createLinearGradient(0,0,0,CH);grd.addColorStop(0,'#f9f8f4');grd.addColorStop(1,'#edeae3');ctx.fillStyle=grd;ctx.fillRect(0,0,CW,CH);
+  const empresa=state.empresa||state.centro||'';
+  if(empresa){ctx.save();ctx.font='bold 13px sans-serif';ctx.fillStyle='rgba(26,26,24,0.18)';ctx.textAlign='right';ctx.fillText('ZONALYTIC · '+empresa.toUpperCase(),CW-16,CH-14);ctx.restore();}
+  function pos(n){return{x:PAD+n._x-NW/2,y:PAD+n._d*(NH+VGAP)};}
+  function edges(n){const p=pos(n),px=p.x+NW/2,py=p.y+NH;(n.hijos||[]).forEach(k=>{const c=pos(k),cx=c.x+NW/2,cy=c.y,my=(py+cy)/2;ctx.beginPath();ctx.moveTo(px,py);ctx.bezierCurveTo(px,my,cx,my,cx,cy);ctx.strokeStyle='#c8c2b6';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);edges(k);});}
+  edges(arbol);
+  function node(n){const{x,y}=pos(n);const col=TIPO_COLOR[n.tipo]||TIPO_COLOR.default;const cx=x+NW/2;ctx.save();ctx.shadowColor='rgba(0,0,0,0.13)';ctx.shadowBlur=10;ctx.shadowOffsetY=4;ctx.beginPath();ctx.roundRect(x,y,NW,NH,9);ctx.fillStyle=col.bg;ctx.fill();ctx.restore();ctx.beginPath();ctx.roundRect(x,y,NW,NH,9);ctx.strokeStyle=col.stroke;ctx.lineWidth=n.tipo==='raiz'?2.5:1.5;ctx.stroke();const hasRfid=n.rfid&&n.tipo!=='raiz';ctx.font=n.tipo==='raiz'?'bold 12px sans-serif':'600 11px sans-serif';ctx.fillStyle=col.text;ctx.textAlign='center';ctx.textBaseline='middle';let lbl=n.nombre||'';const maxW=NW-20;while(lbl.length>3&&ctx.measureText(lbl+'…').width>maxW)lbl=lbl.slice(0,-1);if(lbl!==n.nombre)lbl+='…';ctx.fillText(lbl,cx,y+(hasRfid?NH/2-7:NH/2));if(hasRfid){const pill='● RFID';ctx.font='9px monospace';const pw=ctx.measureText(pill).width+10;ctx.beginPath();ctx.roundRect(cx-pw/2,y+NH/2+1,pw,13,6);ctx.fillStyle=col.bg;ctx.strokeStyle=col.stroke;ctx.lineWidth=1;ctx.fill();ctx.stroke();ctx.fillStyle=col.badge;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(pill,cx,y+NH/2+7);}if(n.tipo&&n.tipo!=='raiz'){const lbl2=n.tipo.slice(0,3).toUpperCase();ctx.font='bold 8px monospace';const bw=ctx.measureText(lbl2).width+8,bh=13;ctx.beginPath();ctx.roundRect(x+NW-bw-3,y-bh/2,bw,bh,3);ctx.fillStyle=col.bg;ctx.strokeStyle=col.stroke;ctx.lineWidth=1;ctx.fill();ctx.stroke();ctx.fillStyle=col.stroke;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(lbl2,x+NW-bw/2-3,y);}(n.hijos||[]).forEach(node);}
+  node(arbol);
+  const leyenda=[{tipo:'produccion',label:'Producción'},{tipo:'logistica',label:'Logística'},{tipo:'incidencias',label:'Incidencias'},{tipo:'comun',label:'Común'}];
+  let lx=PAD,ly=CH-24;ctx.font='9px monospace';
+  leyenda.forEach(l=>{const col=TIPO_COLOR[l.tipo];ctx.beginPath();ctx.roundRect(lx,ly,10,10,2);ctx.fillStyle=col.bg;ctx.strokeStyle=col.stroke;ctx.lineWidth=1;ctx.fill();ctx.stroke();ctx.fillStyle='#5a5650';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(l.label,lx+14,ly+5);lx+=ctx.measureText(l.label).width+26;});
+  ctx.fillStyle='#1a7a5e';ctx.fillText('● = Punto RFID',lx,ly+5);
+}
+
+function descargarArbolCanvas() {
+  const canvas=document.getElementById('arbol-canvas');
+  const a=document.createElement('a');
+  a.download=`arbol_zonas_${(state.empresa||state.centro||'zonalytic').replace(/\s+/g,'_').toLowerCase()}.png`;
+  a.href=canvas.toDataURL('image/png');a.click();
+}
+
+function compartirWhatsApp() {
+  const canvas=document.getElementById('arbol-canvas');
+  if(navigator.share&&navigator.canShare){
+    canvas.toBlob(async blob=>{
+      const file=new File([blob],'arbol_zonalytic.png',{type:'image/png'});
+      if(navigator.canShare({files:[file]})){try{await navigator.share({title:'ZONALYTIC — Árbol de zonas',text:`Ficha: ${state.empresa||state.centro||'Planta'} · ${state.fecha||''}`,files:[file]});return;}catch(e){}}
+      _fallbackWhatsApp();
+    },'image/png');
+  }else{_fallbackWhatsApp();}
+}
+
+function _fallbackWhatsApp(){
+  descargarArbolCanvas();
+  const txt=encodeURIComponent(`📊 *ZONALYTIC — Árbol de zonas*\n🏭 ${state.empresa||state.centro||'Planta'}\n📅 ${state.fecha||''}\n\n_Adjunta la imagen descargada_`);
+  setTimeout(()=>window.open(`https://web.whatsapp.com/send?text=${txt}`,'_blank'),600);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('fecha').value = new Date().toISOString().slice(0, 10);
+</script>
+</body>
+</html>
