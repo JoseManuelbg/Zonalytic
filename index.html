@@ -1604,12 +1604,12 @@ Ficha: ${JSON.stringify(data, null, 2)}`;
     const response = await fetch(PROXY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ prompt })
     });
     clearInterval(iv);
     const result = await response.json();
-    if (result.error) throw new Error(result.error.message);
-    const raw = result.content.map(b => b.text || '').join('');
+    if (result.error) throw new Error(result.error);
+    const raw = result.text || '';
     const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
     const parsed = JSON.parse(clean);
     _arbolData = parsed;
